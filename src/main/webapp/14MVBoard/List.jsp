@@ -6,9 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>파일 첨부형 게시판</title>
+<style>{text-decoration:none;}</style>
 </head>
 <body>
-<h2>파일 첨부형 게시판 - 목록 보기</h2>
+<h2>파일 첨부형 게시판 - 목록 보기(List)</h2>
 	<!-- 검색 폼 -->
 	<form method="get">
 	<table border="1" width=90%">
@@ -38,7 +39,7 @@
 			<th width="8%">첨부</th>
 		</tr>
 <c:choose>
-	<c:when test="${empty boardLists }" >
+	<c:when test="${ empty boardLists }" >
 	<tr>
 		<td colspan="5" align="center">
 			등록된 게시물이 없습니다^^*
@@ -46,11 +47,11 @@
 	</tr>
 	</c:when>
 	<c:otherwise>
-		<c:forEach items="${boardLists }" var="row" varStatus="loop">
+		<c:forEach items="${ boardLists }" var="row" varStatus="loop">
 		<tr align="center">
 			<td>
-				${map.totalCount - ((map.pageNum -1) * map.pageSize) 
-				+loop.index }
+				${ map.totalCount - (((map.pageNum -1) * map.pageSize) 
+				+ loop.index) }
 			</td>
 			<td align="left"> <!-- 제목 (링크) -->
 				<a href="../mvboard/view.do?idx=${row.idx }">${row.title }</a>

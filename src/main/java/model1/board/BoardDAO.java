@@ -264,4 +264,6 @@ public class BoardDAO extends JDBCConnect{
 			e.printStackTrace();
 		}
 	}
+	
+	
 }

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import utils.BoardPage;
-//@WebServlet("../mvboard/list.do")
+@WebServlet("/mvboard/list.do")
 public class ListController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -25,21 +25,28 @@ public class ListController extends HttpServlet{
 			// dao 생성
 			/* MVBoardDAO dao = new MVBoardDAO(application); */
 		
-			MVBoardDAO dao = new MVBoardDAO();
+//			MVBoardDAO dao = new MVBoardDAO();
 			// 뷰에 전달할 매개변수 저장용 맵 생성
+		
 			Map<String, Object> map = new HashMap<String, Object>();
 			
-			String searchField = req.getParameter("searchField");
-			String searchWord = req.getParameter("searchWord");
+			String searchField = req.getParameter("searchField"); // 제목 or 내용
+			String searchWord = req.getParameter("searchWord"); // 검색 키워드
 			if(searchWord != null) {
 				// 쿼리스트링으로 전달받은 매개변수 중 검색어가 있으면 map에 저장
 				map.put("searchField", searchField);
 				map.put("searchWord", searchWord);
 			}
-			int totalCount = dao.selectCount(map); // 게시물 개수
+			// int totalCount = dao.selectCount(map); // 게시물 개수
 			
 			/* 페이지 처리 start */
 			ServletContext application = getServletContext();
+			
+			MVBoardDAO dao = new MVBoardDAO(application);
+			
+			int totalCount = dao.selectCount(map); // 게시물 수 확인
+			
+			// 전체 페이지 수 계산 
 			int pageSize = Integer.parseInt(application.getInitParameter("POST_PER_PAGE"));
 			int blockPage  = Integer.parseInt(application.getInitParameter("PAGES_PER_BLOCK"));
 			
@@ -60,16 +67,18 @@ public class ListController extends HttpServlet{
 			// 게시물 목록 받기
 			dao.close(); // DB 연결 닫기
 			
-			// 뷰에 전달할 매개변수 추가
+			// list.jsp 에 전달할 매개변수 추가
 			String pagingImg = BoardPage.pagingStr(totalCount, pageSize,
 					blockPage, pageNum, "../mvboard/list.do");
+			
+			
 			// 바로가기 영역 HTML 문자열
 			map.put("pagingImg", pagingImg);
 			map.put("totalCount", totalCount);
 			map.put("pageSize", pageSize);
 			map.put("pageNum", pageNum);
 			
-			// 전달할 데이터를 request.   영역에 저장 후 List.jsp 로 포워드
+			// 전달할 데이터를 request 영역에 저장 후 List.jsp 로 포워드
 			req.setAttribute("boardLists", boardLists);
 			req.setAttribute("map", map);
 			req.getRequestDispatcher("/14MVBoard/List.jsp").forward(req, resp);
